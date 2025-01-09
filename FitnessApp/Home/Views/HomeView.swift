@@ -36,26 +36,26 @@ struct HomeView: View {
                                     .fontWeight(.bold)
                                     .foregroundStyle(Color(.green))
                                 
-                                Text("\(vm.active) mins")
+                                Text("\(vm.exercise) mins")
                                     .font(.subheadline)
                             }
                             
                             VStack(alignment: .leading, spacing: 8) {
-                                Text("Standard")
+                                Text("Stand")
                                     .font(.headline)
                                     .fontWeight(.bold)
                                     .foregroundStyle(Color(.blue))
                                 
-                                Text("\(vm.standard) hours")
+                                Text("\(vm.stand) hours")
                                     .font(.subheadline)
                             }
                         }
                         Spacer()
                         ZStack {
                             ProgressCircleView(progress: $vm.calories, goal: 600, color: .red)
-                            ProgressCircleView(progress: $vm.active, goal: 60, color: .green)
+                            ProgressCircleView(progress: $vm.exercise, goal: 60, color: .green)
                                 .padding(.all, 20)
-                            ProgressCircleView(progress: $vm.standard, goal: 12, color: .blue)
+                            ProgressCircleView(progress: $vm.stand, goal: 12, color: .blue)
                                 .padding(.all, 40)
                         }
                         .padding(.horizontal)
