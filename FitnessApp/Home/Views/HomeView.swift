@@ -76,9 +76,11 @@ struct HomeView: View {
                         
                     }
                     .padding(.horizontal)
-                    LazyVGrid(columns: Array(repeating: GridItem(spacing: 20), count: 2)) {
-                        ForEach(vm.mockActivities, id: \.id) { activity in
-                            ActivityCards(activity: activity)
+                    if !vm.activities.isEmpty {
+                        LazyVGrid(columns: Array(repeating: GridItem(spacing: 20), count: 2)) {
+                            ForEach(vm.mockActivities, id: \.title) { activity in
+                                ActivityCards(activity: activity)
+                            }
                         }
                     }
                     HStack {
