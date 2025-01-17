@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct Workout {
-    let id: Int
-    let tintColor: Color
+    let id: Int?
     let title: String
+    let tintColor: Color
     let date: String
     let duration: String
     let image: String
