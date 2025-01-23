@@ -44,22 +44,25 @@ class ChartsViewModel: ObservableObject {
     @Published var threeMonthAverage = 2320
     @Published var threeMonthTotal = 150425
     
-    @Published var ytdAverage = 43535
-    @Published var ytdTotal = 1533533
+    @Published var ytdChartData = [MonthlyStepModel]()
+    @Published var ytdAverage = 0
+    @Published var ytdTotal = 0
     
+    @Published var oneYearChartData = [MonthlyStepModel]()
     @Published var mockOneYearData = [DailyStepModel]()
-    @Published var oneYearAverage = 124323
-    @Published var oneYearTotal = 2313534
+    @Published var oneYearAverage = 0
+    @Published var oneYearTotal = 0
+    
+    let healthManager = HealthManager.shared
     
     init() {
         let mockOneMonth = self.mockDataForDays(days: 30)
         let mockThreeMonths = self.mockDataForDays(days: 90)
-        let mockOneYear = self.mockDataForDays(days: 365)
         DispatchQueue.main.async {
             self.mockOneMonthData = mockOneMonth
             self.mockThreeMonthData = mockThreeMonths
-            self.mockOneYearData = mockOneYear
         }
+        fetchYTDAndOneYearChartData()
     }
     func mockDataForDays(days: Int) -> [DailyStepModel] {
         var mockData = [DailyStepModel]()
@@ -70,5 +73,25 @@ class ChartsViewModel: ObservableObject {
             mockData.append(dailyStepData)
         }
         return mockData
+    }
+    
+    func fetchYTDAndOneYearChartData() {
+        healthManager.fetchYTDAndOneYearChartData { result in
+            switch result {
+            case .success(let result):
+                DispatchQueue.main.async {
+                    self.ytdChartData = result.ytd
+                    self.oneYearChartData = result.oneYear
+                    
+                    self.ytdTotal = self.ytdChartData.reduce(0, { $0 + $1.count})
+                    self.oneYearTotal = self.oneYearChartData.reduce(0, { $0 + $1.count})
+                    
+                    self.ytdAverage = self.ytdTotal / Calendar.current.component(.month, from: Date())
+                    self.oneYearAverage = self.oneYearTotal / 12
+                }
+            case .failure(let failure):
+                print(failure.localizedDescription)
+            }
+        }
     }
 }
