@@ -7,28 +7,6 @@
 
 import SwiftUI
 
-struct LeaderboardUser: Codable {
-    let id = UUID()
-    let userName: String
-    let count: Int
-}
-
-class LeaderBoardViewModel: ObservableObject {
-    let mockData = [
-        LeaderboardUser(userName: "Alice", count: 3456),
-        LeaderboardUser(userName: "Bob", count: 4521),
-        LeaderboardUser(userName: "Charlie", count: 3890),
-        LeaderboardUser(userName: "Diana", count: 4102),
-        LeaderboardUser(userName: "Ethan", count: 2987),
-        LeaderboardUser(userName: "Fiona", count: 5203),
-        LeaderboardUser(userName: "George", count: 3712),
-        LeaderboardUser(userName: "Hannah", count: 4021),
-        LeaderboardUser(userName: "Ian", count: 4455),
-        LeaderboardUser(userName: "Jane", count: 3789)
-    ]
-
-}
-
 struct LeaderBoardView: View {
     @StateObject var viewModel = LeaderBoardViewModel()
     @Binding var showTerms: Bool
@@ -48,11 +26,11 @@ struct LeaderBoardView: View {
                         .bold()
                 }
                 .padding()
-                LazyVStack {
-                    ForEach(viewModel.mockData, id: \.id) { user in
+                LazyVStack(spacing: 20) {
+                    ForEach(viewModel.leaders, id: \.id) { user in
                         Divider()
                         HStack {
-                            Text("\(user.id).")
+                            Text("1.")
                             Text(user.userName)
                             Spacer()
                             Text("\(user.count)")
