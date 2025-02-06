@@ -132,7 +132,7 @@ extension HKWorkoutActivityType {
     }
     
     var color: Color {
-        let symbolColor: Color
+        let _: Color
         switch self {
         case .americanFootball:             return .brown
         case .archery:                      return .green

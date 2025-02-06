@@ -31,6 +31,20 @@ extension Date {
         formatter.dateFormat = "MMM d"
         return formatter.string(from: self)
     }
+    func fetchPreviousMonday() -> Date {
+        let calendar = Calendar.current
+        let weekday = calendar.component(.weekday, from: self)
+        let dayToSubtract = (weekday + 5) % 7
+        var dateComponents = DateComponents()
+        dateComponents.day = -dayToSubtract
+        return calendar.date(byAdding: dateComponents, to: self) ?? Date()
+    }
+    func mondayDateFormat() -> String {
+        let monday = self.fetchPreviousMonday()
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MM-dd-yyyy"
+        return formatter.string(from: monday )
+    }
 }
 
 extension Double {

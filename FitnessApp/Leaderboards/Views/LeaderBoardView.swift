@@ -8,24 +8,23 @@
 import SwiftUI
 
 struct LeaderboardUser: Codable {
-    let id: Int
-    let createAt: String
+    let id = UUID()
     let userName: String
     let count: Int
 }
 
 class LeaderBoardViewModel: ObservableObject {
     let mockData = [
-        LeaderboardUser(id: 1, createAt: "2025-01-10", userName: "Alice", count: 3456),
-        LeaderboardUser(id: 2, createAt: "2025-01-12", userName: "Bob", count: 4521),
-        LeaderboardUser(id: 3, createAt: "2025-01-15", userName: "Charlie", count: 3890),
-        LeaderboardUser(id: 4, createAt: "2025-01-18", userName: "Diana", count: 4102),
-        LeaderboardUser(id: 5, createAt: "2025-01-20", userName: "Ethan", count: 2987),
-        LeaderboardUser(id: 6, createAt: "2025-01-22", userName: "Fiona", count: 5203),
-        LeaderboardUser(id: 7, createAt: "2025-01-23", userName: "George", count: 3712),
-        LeaderboardUser(id: 8, createAt: "2025-01-24", userName: "Hannah", count: 4021),
-        LeaderboardUser(id: 9, createAt: "2025-01-25", userName: "Ian", count: 4455),
-        LeaderboardUser(id: 10, createAt: "2025-01-25", userName: "Jane", count: 3789)
+        LeaderboardUser(userName: "Alice", count: 3456),
+        LeaderboardUser(userName: "Bob", count: 4521),
+        LeaderboardUser(userName: "Charlie", count: 3890),
+        LeaderboardUser(userName: "Diana", count: 4102),
+        LeaderboardUser(userName: "Ethan", count: 2987),
+        LeaderboardUser(userName: "Fiona", count: 5203),
+        LeaderboardUser(userName: "George", count: 3712),
+        LeaderboardUser(userName: "Hannah", count: 4021),
+        LeaderboardUser(userName: "Ian", count: 4455),
+        LeaderboardUser(userName: "Jane", count: 3789)
     ]
 
 }
@@ -65,6 +64,16 @@ struct LeaderBoardView: View {
             .frame(maxHeight: .infinity, alignment: .top)
             .fullScreenCover(isPresented: $showTerms) {
                 TermsView()
+            }
+            .task {
+                do {
+                    try await DatabaseManager.shared.postStepCountUpdateFor(userName: "thanhTrung", count: 7365)
+                } catch {
+                    print("DEBUG: \(error.localizedDescription)")
+                }
+            }
+            .onAppear {
+                print(Date().mondayDateFormat())
             }
         }
     }
