@@ -18,10 +18,9 @@ class DatabaseManager {
     let weeklyLeaderboards = "\(Date().mondayDateFormat())-leaderboard"
     
     // Fetch Leaderboards
-    func fetchLeaderBoards() async throws {
+    func fetchLeaderBoards() async throws -> [LeaderboardUser]{
         let snapshot = try await database.collection(weeklyLeaderboards).getDocuments()
-        print(snapshot.documents)
-        print(snapshot.documents.first?.data())
+        return try snapshot.documents.compactMap({ try $0.data(as: LeaderboardUser.self)})
     }
     // Post (Update) LeaderBoards for current users
     func postStepCountUpdateFor(userName: String, count: Int) async throws {

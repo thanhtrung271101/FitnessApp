@@ -65,16 +65,6 @@ struct LeaderBoardView: View {
             .fullScreenCover(isPresented: $showTerms) {
                 TermsView()
             }
-            .task {
-                do {
-                    try await DatabaseManager.shared.postStepCountUpdateFor(userName: "thanhTrung", count: 7365)
-                } catch {
-                    print("DEBUG: \(error.localizedDescription)")
-                }
-            }
-            .onAppear {
-                print(Date().mondayDateFormat())
-            }
         }
     }
 }
