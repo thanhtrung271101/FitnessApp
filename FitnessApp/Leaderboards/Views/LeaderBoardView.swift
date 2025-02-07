@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct LeaderBoardView: View {
+    @AppStorage("userName") var userName: String?
     @StateObject var viewModel = LeaderBoardViewModel()
     @Binding var showTerms: Bool
     var body: some View {
@@ -26,17 +27,29 @@ struct LeaderBoardView: View {
                         .bold()
                 }
                 .padding()
-                LazyVStack(spacing: 20) {
-                    ForEach(viewModel.leaders, id: \.id) { user in
+                LazyVStack() {
+                    ForEach(Array(viewModel.leadersResult.top10.enumerated()), id: \.element.id) { (idx, person) in
                         Divider()
                         HStack {
-                            Text("1.")
-                            Text(user.userName)
+                            Text("\(idx + 1).")
+                            Text(person.userName)
+                            if userName == person.userName {
+                                Image(systemName: "crown.fill")
+                                    .foregroundStyle(.yellow)
+                            }
                             Spacer()
-                            Text("\(user.count)")
+                            Text("\(person.count)")
                         }
                         .padding(.horizontal)
                     }
+                }
+                if let user = viewModel.leadersResult.user {
+                    HStack {
+                        Text(user.userName)
+                        Spacer()
+                        Text("\(user.count)")
+                    }
+                    .padding(.horizontal)
                 }
             }
             .frame(maxHeight: .infinity, alignment: .top)

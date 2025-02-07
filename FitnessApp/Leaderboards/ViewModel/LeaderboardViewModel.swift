@@ -8,7 +8,7 @@
 import Foundation
 
 class LeaderBoardViewModel: ObservableObject {
-    @Published var leaders = [LeaderboardUser]()
+    @Published var leadersResult = LeaderboardResult(user: nil, top10: [])
     let mockData = [
         LeaderboardUser(userName: "Alice", count: 3456),
         LeaderboardUser(userName: "Bob", count: 4521),
@@ -28,7 +28,7 @@ class LeaderBoardViewModel: ObservableObject {
                 try await postStepCountForUser(userName: "xcode", count: 123)
                 let result = try await fetchLeaderboards()
                 DispatchQueue.main.async {
-                    self.leaders = result.top10
+                    self.leadersResult = result
                 }
             } catch {
                 print("DEBUG: \(error.localizedDescription)")
@@ -44,7 +44,7 @@ class LeaderBoardViewModel: ObservableObject {
         let top10 = Array(leaders.sorted(by: {$0.count > $1.count}).prefix(10))
         let userName = UserDefaults.standard.string(forKey: "userName")
         
-        if let userName = userName {
+        if let userName = userName, !top10.contains(where: { $0.userName == userName }) {
             let user = leaders.first(where: {$0.userName == userName})
             return LeaderboardResult(user: user, top10: top10)
         } else {
