@@ -56,6 +56,17 @@ struct LeaderBoardView: View {
             .fullScreenCover(isPresented: $showTerms) {
                 TermsView()
             }
+            .onChange(of: showTerms) { _ in
+                if !showTerms && userName != nil {
+                    Task {
+                        do {
+                            try await viewModel.setupLeaderboardData()
+                        } catch {
+                            print(error.localizedDescription)
+                        }
+                    }
+                }
+            }
         }
     }
 }

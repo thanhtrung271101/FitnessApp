@@ -31,16 +31,8 @@ extension Date {
         formatter.dateFormat = "MMM d"
         return formatter.string(from: self)
     }
-    func fetchPreviousMonday() -> Date {
-        let calendar = Calendar.current
-        let weekday = calendar.component(.weekday, from: self)
-        let dayToSubtract = (weekday + 5) % 7
-        var dateComponents = DateComponents()
-        dateComponents.day = -dayToSubtract
-        return calendar.date(byAdding: dateComponents, to: self) ?? Date()
-    }
     func mondayDateFormat() -> String {
-        let monday = self.fetchPreviousMonday()
+        let monday = Date.startOfWeek
         let formatter = DateFormatter()
         formatter.dateFormat = "MM-dd-yyyy"
         return formatter.string(from: monday )
@@ -245,5 +237,23 @@ extension HealthManager {
             }
             healthStore.execute(query)
         }
+    }
+}
+
+extension HealthManager {
+    func fetchCurrentWeekStepCount(completion: @escaping (Result<Double, Error>) -> Void) {
+        let steps = HKQuantityType(.stepCount)
+        let predicate = HKQuery.predicateForSamples(withStart: .startOfWeek, end: Date())
+        let query = HKStatisticsQuery(quantityType: steps, quantitySamplePredicate: predicate) { _, results, error in
+            guard let quantity = results?.sumQuantity(), error == nil else {
+                completion(.failure(URLError(.badURL)))
+                return
+            }
+            
+            let steps = quantity.doubleValue(for: .count())
+            completion(.success(steps))
+        }
+        healthStore.execute(query)
+        
     }
 }
