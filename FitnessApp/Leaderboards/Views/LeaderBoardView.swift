@@ -12,7 +12,7 @@ struct LeaderBoardView: View {
     @StateObject var viewModel = LeaderBoardViewModel()
     @Binding var showTerms: Bool
     var body: some View {
-        ScrollView {
+        ZStack {
             VStack {
                 Text("Leaderboard")
                     .font(.largeTitle)
@@ -53,17 +53,19 @@ struct LeaderBoardView: View {
                 }
             }
             .frame(maxHeight: .infinity, alignment: .top)
-            .fullScreenCover(isPresented: $showTerms) {
-                TermsView()
+            if showTerms {
+                Color.white
+                TermsView(showTerms: $showTerms)
             }
-            .onChange(of: showTerms) { _ in
-                if !showTerms && userName != nil {
-                    Task {
-                        do {
-                            try await viewModel.setupLeaderboardData()
-                        } catch {
-                            print(error.localizedDescription)
-                        }
+        }
+        .frame(maxHeight: .infinity, alignment: .top)
+        .onChange(of: showTerms) { _ in
+            if !showTerms && userName != nil {
+                Task {
+                    do {
+                        try await viewModel.setupLeaderboardData()
+                    } catch {
+                        print(error.localizedDescription)
                     }
                 }
             }

@@ -8,47 +8,6 @@
 import Foundation
 import HealthKit
 
-extension Date {
-    static var startOfDay: Date {
-        let calendar = Calendar.current
-        return calendar.startOfDay(for: Date())
-    }
-    static var startOfWeek: Date {
-        let calendar = Calendar.current
-        var component = calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: Date())
-        component.weekday = 2
-        return calendar.date(from: component) ?? Date()
-    }
-    func fetchMonthStartAndEndDate() -> (Date, Date) {
-        let calendar = Calendar.current
-        let startDateComponent = calendar.dateComponents([.year, .month], from: self)
-        let startDate = calendar.date(from: startDateComponent) ?? self
-        let endDate = calendar.date(byAdding: DateComponents(month: 1, day: -1), to: startDate) ?? self
-        return (startDate, endDate)
-    }
-    func formatWorkoutDate() -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MMM d"
-        return formatter.string(from: self)
-    }
-    func mondayDateFormat() -> String {
-        let monday = Date.startOfWeek
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MM-dd-yyyy"
-        return formatter.string(from: monday )
-    }
-}
-
-extension Double {
-    func formattedNumberString() -> String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .decimal
-        formatter.maximumFractionDigits = 0
-        
-        return formatter.string(from: NSNumber(value: self)) ?? "0"
-    }
-}
-
 class HealthManager {
     
     static let shared = HealthManager()

@@ -11,7 +11,7 @@ struct TermsView: View {
     @AppStorage("userName") var userName: String?
     @State var name = ""
     @State var acceptedTerms = false
-    @Environment(\.dismiss) var dismiss
+    @Binding var showTerms: Bool
     var body: some View {
         VStack {
             Text("Leaderboard")
@@ -42,7 +42,7 @@ struct TermsView: View {
             Button {
                 if acceptedTerms && name.count > 2 {
                     userName = name
-                    dismiss()
+                    showTerms = false
                 }
             } label: {
                 Text("Continue")
@@ -59,5 +59,5 @@ struct TermsView: View {
 }
 
 #Preview {
-    TermsView()
+    TermsView(showTerms: .constant(true))
 }
