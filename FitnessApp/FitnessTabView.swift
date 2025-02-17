@@ -38,6 +38,7 @@ struct FitnessTabView: View {
                     Image(systemName: "list.bullet")
                     Text("Leaderboard")
                 }
+            ProfileView()
         }
         .onAppear {
             showTerms = userName == nil

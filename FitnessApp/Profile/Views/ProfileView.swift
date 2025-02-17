@@ -8,10 +8,19 @@
 import SwiftUI
 
 struct ProfileView: View {
+    @AppStorage("profileName") var profileName: String?
+    @AppStorage("profileImage") var profileImage: String?
+    @State private var images = [
+        "oldman", "ambessa", "darius", "draven", "ironman", "hulk", "caitlyn", "liss", "elise", "gagi", "steve", "tom", "black"
+    ]
+    @State private var isEditingName = true
+    @State private var currentName = ""
+    @State private var isEditingImage = false
+    @State private var seletedImage: String?
     var body: some View {
         VStack {
             HStack(spacing: 16) {
-                Image("oldman")
+                Image(profileImage ?? "oldman")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 100, height: 100)
@@ -20,21 +29,111 @@ struct ProfileView: View {
                         RoundedRectangle(cornerRadius: 10)
                             .foregroundStyle(.gray.opacity(0.25))
                     )
+                    .onTapGesture {
+                        withAnimation {
+                            isEditingName = false
+                            isEditingImage = true
+                        }
+                    }
                 VStack(alignment: .leading) {
-                    Text("Good morning")
+                    Text("Good morning,")
                         .font(.largeTitle)
                         .foregroundStyle(.gray)
-                    Text("Name")
+                        .minimumScaleFactor(0.5)
+                    
+                    Text(profileName ?? "Name")
                         .font(.title)
                 }
+            }
+            if isEditingName {
+                VStack {
+                    TextField("Name ...", text: $currentName)
+                        .padding()
+                        .background(
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke()
+                        )
+                    HStack {
+                        FitnessProfileEditButton(title: "Cancel", backgroundColor: .gray.opacity(0.1)) {
+                            withAnimation {
+                                isEditingName = false
+                            }
+                        }
+                        .foregroundStyle(.red)
+                        FitnessProfileEditButton(title: "Done", backgroundColor: .primary) {
+                            if !currentName.isEmpty {
+                                withAnimation {
+                                    profileName = currentName
+                                    isEditingName = false
+                                }
+                            }
+                        }
+                        .foregroundStyle(Color(uiColor: .systemBackground))
+                    }
+                }
+            }
+            if isEditingImage {
+                ScrollView(.horizontal) {
+                    HStack {
+                        ForEach(images, id: \.self) { image in
+                            Button {
+                                withAnimation {
+                                    seletedImage = image
+                                }
+                            } label: {
+                                VStack {
+                                    Image(image)
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 100, height: 100)
+                                        .onTapGesture {
+                                            seletedImage = image
+                                        }
+                                    if seletedImage == image {
+                                        Circle()
+                                            .frame(width: 16, height: 16)
+                                            .foregroundStyle(.primary)
+                                    }
+                                }
+                                .padding()
+                            }
+                        }
+                    }
+                }
+                .background(
+                    RoundedRectangle(cornerRadius: 10)
+                        .foregroundStyle(.gray.opacity(0.25))
+                )
                 
+                Button {
+                    withAnimation {
+                        profileImage = seletedImage
+                        isEditingImage = false
+                    }
+                } label: {
+                    Text("Done")
+                        .padding()
+                        .frame(maxWidth: 200)
+                        .foregroundStyle(.white)
+                        .background(
+                            RoundedRectangle(cornerRadius: 10)
+                                .fill(.black)
+                        )
+                }
+                .padding(.bottom)
             }
             VStack {
-                FitnessProfileButton(title: "Edit name", image: "square.and.pencil") {
-                    print("Edit name")
+                FitnessProfileItemButton(title: "Edit name", image: "square.and.pencil") {
+                    withAnimation {
+                        isEditingName = true
+                        isEditingImage = false
+                    }
                 }
-                FitnessProfileButton(title: "Edit image", image: "square.and.pencil") {
-                    print("Edit image")
+                FitnessProfileItemButton(title: "Edit image", image: "square.and.pencil") {
+                    withAnimation {
+                        isEditingImage = true
+                        isEditingName = false
+                    }
                 }
             }
             .background(
@@ -43,13 +142,13 @@ struct ProfileView: View {
             )
             .padding(.vertical)
             VStack {
-                FitnessProfileButton(title: "Contact Us", image: "envelope") {
+                FitnessProfileItemButton(title: "Contact Us", image: "envelope") {
                     print("Contact Us")
                 }
-                FitnessProfileButton(title: "Privacy", image: "doc") {
+                FitnessProfileItemButton(title: "Privacy", image: "doc") {
                     print("Privacy")
                 }
-                FitnessProfileButton(title: "Terms of Service", image: "doc") {
+                FitnessProfileItemButton(title: "Terms of Service", image: "doc") {
                     print("Terms of Service")
                 }
             }
@@ -60,6 +159,9 @@ struct ProfileView: View {
         }
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .onAppear {
+            seletedImage = profileImage
+        }
     }
 }
 
